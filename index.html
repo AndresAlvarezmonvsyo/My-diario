@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="es"> 
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  <title>Mi Diario Personal</title> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css"> 
+  <style>
+    :root {
+      --primary: #4e54c8;
+      --secondary: #8f94fb;
+      --accent: #6a82fb;
+      --text: #333;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --border: #e0e0e0;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --footer: #222;
+      --footer-text: #fff;
+      --header-bg: linear-gradient(to right, var(--primary), var(--secondary));
+    }
+
+    .dark-mode {
+      --primary: #7579e7;
+      --secondary: #9ab3f5;
+      --accent: #a3d8f4;
+      --text: #e0e0e0;
+      --bg: #121212;
+      --card-bg: #1e1e1e;
+      --border: #333;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --footer: #111;
+      --footer-text: #ddd;
+      --header-bg: linear-gradient(to right, #2c2c54, #474787);
+    }
+
+    * {
+      box-sizing: border-box;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: var(--header-bg);
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header h1 i {
+      margin-right: 10px;
+      font-size: 1.5rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 15px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--border);
+    }
+
+    textarea, input[type="text"], input[type="password"], input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: var(--bg);
+      color: var(--text);
+      resize: vertical;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: var(--primary);
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      margin: 5px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px var(--shadow);
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+    }
+
+    .btn-warning {
+      background: #f39c12;
+    }
+
+    #canvas-container {
+      position: relative;
+      margin-top: 10px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    canvas {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background-color: white;
+      max-width: 100%;
+    }
+
+    .tool-panel {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+
+    .color-picker {
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--footer);
+      color: var(--footer-text);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      box-shadow: 0 -2px 10px var(--shadow);
+      z-index: 999;
+    }
+
+    footer i {
+      font-size: 22px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    footer i:hover {
+      color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .active-nav {
+      color: var(--accent);
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #login {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .login-card img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+    }
+
+    .login-card h2 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .themes {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .theme-option {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .theme-option:hover {
+      transform: scale(1.1);
+    }
+
+    .theme-option.active {
+      border-color: var(--primary);
+    }
+
+    .entries-list {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .entry-item {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .entry-item:hover {
+      box-shadow: 0 3px 10px var(--shadow);
+    }
+
+    .entry-date {
+      font-size: 0.9rem;
+      color: var(--secondary);
+      font-weight: bold;
+    }
+
+    .entry-preview {
+      font-size: 0.9rem;
+      margin-top: 5px;
+      color: var(--text);
+      opacity: 0.8;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quick-notes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .note {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px var(--shadow);
+      width: calc(50% - 10px);
+      position: relative;
+      min-height: 100px;
+      border: 1px solid var(--border);
+    }
+
+    .note textarea {
+      border: none;
+      background: transparent;
+      width: 100%;
+      height: 80px;
+      resize: none;
+      padding: 0;
+      margin: 0;
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .note-actions {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      display: flex;
+    }
+
+    .note-actions i {
+      padding: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .mode-toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .search-bar {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      margin-right: 10px;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 768px) {
+      .note {
+        width: 100%;
+      }
+    }
+
+    .mood-selector {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      flex-wrap: wrap;
+    }
+
+    .mood {
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .mood:hover {
+      transform: scale(1.2);
+    }
+
+    .selected-mood {
+      background: var(--secondary);
+      transform: scale(1.2);
+    }
+
+    .welcome-message {
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 20px 0;
+      color: var(--primary);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      text-align: center;
+    }
+
+    .stat {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 10px;
+      width: 30%;
+      box-shadow: 0 3px 10px var(--shadow);
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text);
+      opacity: 0.8;
+    }
+
+    /* Botones de control para canvas */
+    .canvas-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin: 10px 0;
+    }
+
+    .canvas-controls button {
+      padding: 8px 12px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .canvas-controls .color-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      padding: 0;
+    }
+
+    .header-date {
+      font-size: 0.9rem;
+      margin-top: 5px;
+      opacity: 0.9;
+    }
+
+    /* Estilo para el botón de borrador activo */
+    #eraser-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Estilo para el crédito */
+    .credits {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text);
+      opacity: 0.7;
+    }
+  </style> 
+ </head> 
+ <body> <!-- Pantalla de Login --> 
+  <div id="login"> 
+   <div class="login-card animate__animated animate__fadeIn"> 
+    <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-b964-61f6-93dc-581da68163ad/raw?se=2025-04-26T02%3A00%3A45Z&amp;sp=r&amp;sv=2024-08-04&amp;sr=b&amp;scid=eac16e5e-630a-5235-8861-76f242076f9c&amp;skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2025-04-25T23%3A05%3A52Z&amp;ske=2025-04-26T23%3A05%3A52Z&amp;sks=b&amp;skv=2024-08-04&amp;sig=mpsgBx1GkGwg89H1D/qafQL%2BiU2CXxD0ON89JDv2UAc%3D" alt="Diario Logo"> 
+    <h2>Mi Diario Personal</h2> 
+    <h2>Contraseña de fabrica "1234"<br>Si no te sientes seguro, la puedes cambiar</h2>
+    <p>Ingresa tu contraseña para continuar</p> 
+    <input type="password" id="passwordInput" placeholder="Contraseña" autofocus> 
+    <p id="login-error" style="color: #e74c3c; display: none;">Contraseña incorrecta</p> <button class="btn" id="loginBtn"><i class="fa fa-unlock"></i> Entrar</button> 
+   </div> 
+  </div> <!-- Header con título y botón de modo --> 
+  <header> <button class="mode-toggle" id="toggleMode"> <i class="fa fa-moon"></i> </button> 
+   <h1><i class="fa fa-book"></i> Mi Diario Personal</h1> 
+   <div class="header-date" id="currentDate"></div> 
+  </header> <!-- Contenedor principal --> 
+  <div class="container"> <!-- Sección Inicio --> 
+   <section id="home" class="section active"> 
+    <div class="card"> 
+     <h2><i class="fa fa-home"></i> Bienvenido a tu diario</h2> 
+     <div class="welcome-message"> 
+      <p>Hola de nuevo. ¿Cómo te sientes hoy?</p> 
+     </div> 
+     <div class="mood-selector"> 
+      <div class="mood" data-mood="😊">
+       😊
+      </div> 
+      <div class="mood" data-mood="😐">
+       😐
+      </div> 
+      <div class="mood" data-mood="😢">
+       😢
+      </div> 
+      <div class="mood" data-mood="😡">
+       😡
+      </div> 
+      <div class="mood" data-mood="😴">
+       😴
+      </div> 
+      <div class="mood" data-mood="🥳">
+       🥳
+      </div> 
+     </div> 
+     <div class="stats"> 
+      <div class="stat"> 
+       <div class="stat-number" id="entriesCount">
+        0
+       </div> 
+       <div class="stat-label">
+        Entradas
+       </div> 
+      </div> 
+      <div class="stat"> 
+       <div class="stat-number" id="notesCount">
+        0
+       </div> 
+       <div class="stat-label">
+        Notas
+       </div> 
+      </div> 
+      <div class="stat"> 
+       <div class="stat-number" id="daysStreak">
+        0
+       </div> 
+       <div class="stat-label">
+        Días activo
+       </div> 
+      </div> 
+     </div> 
+     <h3>Últimas entradas</h3> 
+     <div id="recent-entries"> <!-- Entradas recientes se cargarán aquí --> 
+     </div> 
+     <div style="text-align: center; margin-top: 20px;"> <button class="btn" id="new-entry-btn"> <i class="fa fa-plus"></i> Nueva entrada </button> 
+     </div> 
+    </div> 
+   </section> <!-- Sección Entradas --> 
+   <section id="entries" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-book-open"></i> Mis Entradas</h2> 
+     <div class="search-bar"> 
+      <input type="text" id="search-entries" placeholder="Buscar en mis entradas..."> <button class="btn" id="search-btn"><i class="fa fa-search"></i></button> 
+     </div> 
+     <div class="entries-list" id="entries-list"> <!-- Lista de entradas se cargará aquí --> 
+     </div> 
+    </div> 
+    <div class="card" id="entry-editor"> 
+     <h3><i class="fa fa-edit"></i> <span id="editor-title">Nueva entrada</span></h3> 
+     <input type="date" id="entry-date"> 
+     <input type="text" id="entry-title" placeholder="Título"> 
+     <div class="mood-selector"> 
+      <div class="mood" data-mood="😊">
+       😊
+      </div> 
+      <div class="mood" data-mood="😐">
+       😐
+      </div> 
+      <div class="mood" data-mood="😢">
+       😢
+      </div> 
+      <div class="mood" data-mood="😡">
+       😡
+      </div> 
+      <div class="mood" data-mood="😴">
+       😴
+      </div> 
+      <div class="mood" data-mood="🥳">
+       🥳
+      </div> 
+     </div> <textarea id="entry-content" rows="8" placeholder="¿Cómo fue tu día hoy?"></textarea> 
+     <div style="text-align: right;"> <button class="btn btn-secondary" id="cancel-entry"><i class="fa fa-times"></i> Cancelar</button> <button class="btn" id="save-entry"><i class="fa fa-save"></i> Guardar</button> 
+     </div> 
+    </div> 
+   </section> <!-- Sección Notas --> 
+   <section id="notes" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-sticky-note"></i> Notas Rápidas</h2> 
+     <p>Guarda tus ideas, pensamientos o recordatorios rápidos.</p> <button class="btn" id="add-note-btn"><i class="fa fa-plus"></i> Nueva nota</button> 
+     <div class="quick-notes" id="notes-container"> <!-- Las notas se cargarán aquí --> 
+     </div> 
+    </div> 
+   </section> <!-- Sección Dibujo --> 
+   <section id="drawing" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-paint-brush"></i> Mi Lienzo</h2> 
+     <p>Expresa tus emociones y pensamientos con dibujos.</p> 
+     <div class="canvas-controls"> <button class="color-btn" style="background: #000000" data-color="#000000"></button> <button class="color-btn" style="background: #e74c3c" data-color="#e74c3c"></button> <button class="color-btn" style="background: #3498db" data-color="#3498db"></button> <button class="color-btn" style="background: #2ecc71" data-color="#2ecc71"></button> <button class="color-btn" style="background: #f1c40f" data-color="#f1c40f"></button> <button class="color-btn" style="background: #9b59b6" data-color="#9b59b6"></button> 
+      <input type="range" id="brush-size" min="1" max="50" value="5"> 
+      <button id="eraser-btn" onclick="toggleEraser()"><i class="fa fa-eraser"></i> Borrador</button>
+      <button id="clear-canvas"><i class="fa fa-trash"></i> Limpiar</button> 
+      <button id="save-drawing"><i class="fa fa-save"></i> Guardar</button>
+      <button id="download-drawing"><i class="fa fa-download"></i> Descargar</button>
+     </div> 
+     <div id="canvas-container"> 
+      <canvas id="drawing-canvas" width="800" height="400"></canvas> 
+     </div> 
+     <div id="saved-drawings"> <!-- Los dibujos guardados se mostrarán aquí --> 
+     </div> 
+    </div> 
+   </section> <!-- Sección Configuración --> 
+   <section id="settings" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-cog"></i> Configuración</h2> 
+     <h3>Tema</h3> 
+     <div class="themes"> 
+      <div class="theme-option" style="background: linear-gradient(to right, #4e54c8, #8f94fb)" data-theme="default"></div> 
+      <div class="theme-option" style="background: linear-gradient(to right, #11998e, #38ef7d)" data-theme="green"></div> 
+      <div class="theme-option" style="background: linear-gradient(to right, #200122, #6f0000)" data-theme="red"></div> 
+      <div class="theme-option" style="background: linear-gradient(to right, #c31432, #240b36)" data-theme="pink"></div> 
+      <div class="theme-option" style="background: linear-gradient(to right, #2c3e50, #4ca1af)" data-theme="blue"></div> 
+      <div class="theme-option" style="background: linear-gradient(to right, #f12711, #f5af19)" data-theme="orange"></div> 
+     </div> 
+     <h3>Modo</h3> <button class="btn" id="theme-toggle"><i class="fa fa-moon"></i> Cambiar a modo oscuro</button> 
+     <h3>Seguridad</h3> 
+     <div class="card"> 
+      <h4>Cambiar contraseña</h4> 
+      <input type="password" id="current-password" placeholder="Contraseña actual"> 
+      <input type="password" id="new-password" placeholder="Nueva contraseña"> 
+      <input type="password" id="confirm-password" placeholder="Confirmar nueva contraseña"> <button class="btn" id="change-password-btn"><i class="fa fa-key"></i> Cambiar contraseña</button> 
+     </div> 
+     <h3>Datos</h3> 
+     <div class="card"> 
+      <h4>Respaldo y restauración</h4> <button class="btn" id="export-data"><i class="fa fa-download"></i> Exportar datos</button> <button class="btn btn-warning" id="import-data"><i class="fa fa-upload"></i> Importar datos</button> 
+      <input type="file" id="import-file" style="display: none;"> <button class="btn btn-danger" id="delete-all-data"><i class="fa fa-trash"></i> Borrar todos los datos</button> 
+     </div> 
+     <div class="credits">
+      Powered By Andres Alvarez
+     </div>
+    </div> 
+   </section> 
+  </div> <!-- Footer de navegación --> 
+  <footer> <i class="fa fa-home active-nav" data-section="home"></i> <i class="fa fa-book-open" data-section="entries"></i> <i class="fa fa-sticky-note" data-section="notes"></i> <i class="fa fa-paint-brush" data-section="drawing"></i> <i class="fa fa-cog" data-section="settings"></i> 
+  </footer> <!-- Scripts --> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script> 
+  <script>
+  // Configuración de la contraseña por defecto
+  const DEFAULT_PASSWORD = "1234";
+  
+  // Variables globales
+  let currentTheme = "default";
+  let isDarkMode = false;
+  let currentMood = "";
+  let currentEntryId = null;
+  let drawingColor = "#000000";
+  let brushSize = 5;
+  let isDrawing = false;
+  let isErasing = false;
+  let canvas, ctx;
+  
+  // Función para inicializar la aplicación
+  function inicializarApp() {
+    // Inicializar la fecha actual
+    actualizarFechaActual();
+    
+    // Configurar el canvas de dibujo
+    inicializarCanvas();
+    
+    // Cargar datos del localStorage
+    cargarEstadisticas();
+    cargarEntradasRecientes();
+    cargarListaEntradas();
+    cargarNotas();
+    
+    // Establecer la sección activa por defecto
+    mostrarSeccion('home');
+    
+    // Establecer el modo (claro/oscuro) según preferencias
+    verificarModoOscuro();
+    
+    // Configurar la fecha de entrada por defecto como hoy
+    document.getElementById('entry-date').valueAsDate = new Date();
+    
+    // Ocultar el editor de entradas por defecto
+    $('#entry-editor').hide();
+  }
+  
+  // Función para mostrar la fecha actual
+  function actualizarFechaActual() {
+    const hoy = new Date();
+    const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('currentDate').innerText = hoy.toLocaleDateString('es-ES', opciones);
+  }
+  
+  // Función para inicializar el canvas de dibujo
+  function inicializarCanvas() {
+    canvas = document.getElementById('drawing-canvas');
+    ctx = canvas.getContext('2d');
+    
+    // Ajustar el tamaño del canvas al contenedor
+    function resizeCanvas() {
+      const container = document.getElementById('canvas-container');
+      const width = container.offsetWidth - 2; // -2 para el borde
+      
+      // Mantener la proporción pero no hacer el canvas más grande que su tamaño original
+      const aspectRatio = canvas.height / canvas.width;
+      const newWidth = Math.min(width, canvas.width);
+      const newHeight = newWidth * aspectRatio;
+      
+      canvas.style.width = newWidth + 'px';
+      canvas.style.height = newHeight + 'px';
+    }
+    
+    // Ajustar el canvas al cargar y al cambiar el tamaño de la ventana
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Eventos de dibujo
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseout', stopDrawing);
+    
+    // Eventos táctiles para dispositivos móviles
+    canvas.addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
+    });
+    
+    canvas.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
+    });
+    
+    canvas.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      const mouseEvent = new MouseEvent('mouseup');
+      canvas.dispatchEvent(mouseEvent);
+    });
+    
+    // Limpiar el canvas
+    limpiarCanvas();
+  }
+  
+  // Funciones para dibujar en el canvas
+  function startDrawing(e) {
+    isDrawing = true;
+    draw(e);
+  }
+  
+  function draw(e) {
+    if (!isDrawing) return;
+    
+    // Obtener la posición del cursor relativa al canvas
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    
+    // Calcular la posición real en el canvas
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    
+    if (isErasing) {
+      // Modo borrador
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, brushSize, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      // Modo dibujo normal
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.lineWidth = brushSize;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = drawingColor;
+      ctx.lineTo(x, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+    }
+  }
+  
+  function stopDrawing() {
+    isDrawing = false;
+    ctx.beginPath();
+  }
+  
+  // Función para activar/desactivar el borrador
+  function toggleEraser() {
+    isErasing = !isErasing;
+    if (isErasing) {
+      $('#eraser-btn').addClass('active');
+      mostrarMensaje('Modo borrador activado', 'info');
+    } else {
+      $('#eraser-btn').removeClass('active');
+      mostrarMensaje('Modo borrador desactivado', 'info');
+    }
+  }
+  
+  // Función para descargar el dibujo actual
+  function descargarDibujo() {
+    const link = document.createElement('a');
+    link.download = 'mi_dibujo_' + new Date().toISOString().slice(0, 10) + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+  
+  // Función para cargar estadísticas
+  function cargarEstadisticas() {
+    const entries = obtenerEntradas();
+    const notes = obtenerNotas();
+    const streak = calcularRacha();
+    
+    $('#entriesCount').text(entries.length);
+    $('#notesCount').text(notes.length);
+    $('#daysStreak').text(streak);
+  }
+  
+  // Función para calcular la racha de días
+  function calcularRacha() {
+    const entries = obtenerEntradas();
+    if (entries.length === 0) return 0;
+    
+    // Ordenar entradas por fecha
+    entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Verificar si hay entrada hoy
+    const hoy = new Date().toISOString().split('T')[0];
+    const tieneEntradaHoy = entries.some(entry => entry.date === hoy);
+    
+    // Si no hay entrada hoy, no hay racha
+    if (!tieneEntradaHoy) return 0;
+    
+    // Calcular racha
+    let racha = 1;
+    let fechaAnterior = new Date(hoy);
+    
+    for (let i = 0; i < entries.length; i++) {
+      const fechaEntrada = new Date(entries[i].date);
+      const diferenciaDias = Math.floor((fechaAnterior - fechaEntrada) / (1000 * 60 * 60 * 24));
+      
+      if (diferenciaDias === 1) {
+        racha++;
+        fechaAnterior = fechaEntrada;
+      } else if (diferenciaDias > 1) {
+        break;
+      }
+    }
+    
+    return racha;
+  }
+  
+  // Función para cargar entradas recientes
+  function cargarEntradasRecientes() {
+    const entries = obtenerEntradas();
+    const recentEntries = $('#recent-entries');
+    recentEntries.empty();
+    
+    // Ordenar entradas por fecha (más reciente primero)
+    entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    // Tomar solo las 3 entradas más recientes
+    const recientes = entries.slice(0, 3);
+    
+    if (recientes.length === 0) {
+      recentEntries.html('<p>No hay entradas recientes. ¡Crea tu primera entrada!</p>');
+      return;
+    }
+    
+    recientes.forEach(entry => {
+      const preview = entry.content.length > 100 ? entry.content.substring(0, 100) + '...' : entry.content;
+      const entryItem = $(`
+        <div class="entry-item" data-id="${entry.id}">
+          <div class="entry-date">${formatearFecha(entry.date)} ${entry.mood || ''}</div>
+          <strong>${entry.title}</strong>
+          <div class="entry-preview">${preview}</div>
+        </div>
+      `);
+      
+      entryItem.on('click', function() {
+        // Editar esta entrada
+        editarEntrada(entry.id);
+        mostrarSeccion('entries');
+      });
+      
+      recentEntries.append(entryItem);
+    });
+  }
+  
+  // Función para formatear una fecha
+  function formatearFecha(fechaISO) {
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleDateString('es-ES', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  }
+  
+  // Función para cargar la lista completa de entradas
+  function cargarListaEntradas() {
+    const entries = obtenerEntradas();
+    const entriesList = $('#entries-list');
+    entriesList.empty();
+    
+    // Ordenar entradas por fecha (más reciente primero)
+    entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    if (entries.length === 0) {
+      entriesList.html('<p>No hay entradas. ¡Crea tu primera entrada!</p>');
+      return;
+    }
+    
+    entries.forEach(entry => {
+      const preview = entry.content.length > 100 ? entry.content.substring(0, 100) + '...' : entry.content;
+      const entryItem = $(`
+        <div class="entry-item" data-id="${entry.id}">
+          <div class="entry-date">${formatearFecha(entry.date)} ${entry.mood || ''}</div>
+          <strong>${entry.title}</strong>
+          <div class="entry-preview">${preview}</div>
+        </div>
+      `);
+      
+      entryItem.on('click', function() {
+        // Editar esta entrada
+        editarEntrada(entry.id);
+      });
+      
+      entriesList.append(entryItem);
+    });
+  }
+  
+  // Función para cargar notas
+  function cargarNotas() {
+    const notes = obtenerNotas();
+    const notesContainer = $('#notes-container');
+    notesContainer.empty();
+    
+    // Si no hay notas, mostrar mensaje
+    if (notes.length === 0) {
+      notesContainer.html('<p>No hay notas. ¡Crea tu primera nota!</p>');
+      return;
+    }
+    
+    // Mostrar cada nota
+    notes.forEach(note => {
+      const noteElement = $(`
+        <div class="note" data-id="${note.id}">
+          <textarea>${note.content}</textarea>
+          <div class="note-actions">
+            <i class="fa fa-save" title="Guardar"></i>
+            <i class="fa fa-trash" title="Eliminar"></i>
+          </div>
+        </div>
+      `);
+      
+      // Evento para guardar la nota
+      noteElement.find('.fa-save').on('click', function() {
+        const content = noteElement.find('textarea').val();
+        guardarNota(note.id, content);
+        mostrarMensaje('Nota guardada', 'success');
+      });
+      
+      // Evento para eliminar la nota
+      noteElement.find('.fa-trash').on('click', function() {
+        if (confirm('¿Eliminar esta nota?')) {
+          eliminarNota(note.id);
+          noteElement.remove();
+          cargarEstadisticas();
+        }
+      });
+      
+      notesContainer.append(noteElement);
+    });
+  }
+  
+  // Función para guardar un dibujo
+  function guardarDibujo() {
+    const dataURL = canvas.toDataURL('image/png');
+    
+    Swal.fire({
+        title: 'Guardar dibujo',
+        input: 'text',
+        inputLabel: 'Título del dibujo',
+        inputPlaceholder: 'Ingresa un título para tu dibujo',
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const title = result.value || 'Dibujo sin título';
+            
+            const dibujos = JSON.parse(localStorage.getItem('diario_dibujos') || '[]');
+            dibujos.push({
+                id: 'drawing_' + Date.now(),
+                title: title,
+                dataURL: dataURL,
+                createdAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('diario_dibujos', JSON.stringify(dibujos));
+            mostrarMensaje('Dibujo guardado', 'success');
+            limpiarCanvas();
+            
+            mostrarDibujosGuardados();
+        }
+    });
+}
+
+function mostrarDibujosGuardados() {
+    const dibujos = JSON.parse(localStorage.getItem('diario_dibujos') || '[]');
+    const container = $('#saved-drawings');
+    container.empty();
+    
+    if (dibujos.length === 0) {
+        container.html('<p>No hay dibujos guardados.</p>');
+        return;
+    }
+    
+    dibujos.forEach(dibujo => {
+        const dibujoElement = $(`
+            <div class="card" style="margin-top: 20px;">
+                <h3>${dibujo.title}</h3>
+                <p>Guardado el ${new Date(dibujo.createdAt).toLocaleDateString()}</p>
+                <img src="${dibujo.dataURL}" style="max-width: 100%; border: 1px solid var(--border); border-radius: 8px;">
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-secondary edit-drawing" data-id="${dibujo.id}" style="margin-right: 5px;">
+                        <i class="fa fa-edit"></i> Editar
+                    </button>
+                    <button class="btn btn-danger delete-drawing" data-id="${dibujo.id}">
+                        <i class="fa fa-trash"></i> Eliminar
+                    </button>
+                    <button class="btn download-drawing" data-url="${dibujo.dataURL}" data-title="${dibujo.title}">
+                        <i class="fa fa-download"></i> Descargar
+                    </button>
+                </div>
+            </div>
+        `);
+        
+        container.append(dibujoElement);
+    });
+    
+    $('.edit-drawing').click(function() {
+        const id = $(this).data('id');
+        editarDibujo(id);
+    });
+    
+    $('.delete-drawing').click(function() {
+        const id = $(this).data('id');
+        eliminarDibujo(id);
+    });
+    
+    $('.download-drawing').click(function() {
+        const url = $(this).data('url');
+        const title = $(this).data('title') || 'dibujo';
+        descargarImagen(url, title);
+    });
+}
+  
+  // Función para descargar una imagen
+  function descargarImagen(url, nombre) {
+    const link = document.createElement('a');
+    link.download = nombre + '.png';
+    link.href = url;
+    link.click();
+  }
+  
+  // Función para editar un dibujo existente
+  function editarDibujo(id) {
+    const dibujos = JSON.parse(localStorage.getItem('diario_dibujos') || []);
+    const dibujo = dibujos.find(d => d.id === id);
+    
+    if (dibujo) {
+      // Cargar la imagen en el canvas
+      const img = new Image();
+      img.onload = function() {
+        limpiarCanvas();
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = dibujo.dataURL;
+      
+      mostrarMensaje('Dibujo cargado para edición', 'success');
+    }
+  }
+  
+  // Función para eliminar un dibujo
+  function eliminarDibujo(id) {
+    Swal.fire({
+      title: '¿Eliminar este dibujo?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let dibujos = JSON.parse(localStorage.getItem('diario_dibujos') || []);
+        dibujos = dibujos.filter(d => d.id !== id);
+        localStorage.setItem('diario_dibujos', JSON.stringify(dibujos));
+        mostrarDibujosGuardados();
+        mostrarMensaje('Dibujo eliminado', 'success');
+      }
+    });
+  }
+  
+  // Función para limpiar el canvas
+  function limpiarCanvas() {
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = drawingColor;
+  }
+  
+  // Funciones para obtener datos del localStorage
+  function obtenerEntradas() {
+    return JSON.parse(localStorage.getItem('diario_entradas') || '[]');
+  }
+  
+  function obtenerNotas() {
+    return JSON.parse(localStorage.getItem('diario_notas') || '[]');
+  }
+  
+  // Función para mostrar una sección específica
+  function mostrarSeccion(seccionId) {
+    // Ocultar todas las secciones
+    $('.section').removeClass('active');
+    
+    // Mostrar la sección seleccionada
+    $(`#${seccionId}`).addClass('active');
+    
+    // Actualizar navegación
+    $('footer i').removeClass('active-nav');
+    $(`.fa-${mapIconToSection(seccionId)}`).addClass('active-nav');
+    
+    // Lógica específica según la sección
+    if (seccionId === 'entries') {
+      cargarListaEntradas();
+    } else if (seccionId === 'notes') {
+      cargarNotas();
+    } else if (seccionId === 'drawing') {
+      mostrarDibujosGuardados();
+    }
+  }
+  
+  // Mapear sección a icono
+  function mapIconToSection(seccionId) {
+    const iconMap = {
+      'home': 'home',
+      'entries': 'book-open',
+      'notes': 'sticky-note',
+      'drawing': 'paint-brush',
+      'settings': 'cog'
+    };
+    return iconMap[seccionId];
+  }
+  
+  // Función para verificar el modo oscuro
+  function verificarModoOscuro() {
+    // Verificar preferencias guardadas
+    isDarkMode = localStorage.getItem('diario_darkmode') === 'true';
+    
+    // Aplicar modo oscuro si es necesario
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      $('#toggleMode i').removeClass('fa-moon').addClass('fa-sun');
+      $('#theme-toggle').html('<i class="fa fa-sun"></i> Cambiar a modo claro');
+    }
+  }
+  
+  // Función para cambiar el modo oscuro/claro
+  function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    
+    // Guardar preferencia
+    localStorage.setItem('diario_darkmode', isDarkMode);
+    
+    // Aplicar cambios
+    if (isDarkMode) {
+      document.body.classList.add('dark-mode');
+      $('#toggleMode i').removeClass('fa-moon').addClass('fa-sun');
+      $('#theme-toggle').html('<i class="fa fa-sun"></i> Cambiar a modo claro');
+    } else {
+      document.body.classList.remove('dark-mode');
+      $('#toggleMode i').removeClass('fa-sun').addClass('fa-moon');
+      $('#theme-toggle').html('<i class="fa fa-moon"></i> Cambiar a modo oscuro');
+    }
+  }
+  
+  // Función para crear una nueva entrada
+  function nuevaEntrada() {
+    currentEntryId = null;
+    $('#editor-title').text('Nueva entrada');
+    $('#entry-date').valueAsDate = new Date();
+    $('#entry-title').val('');
+    $('#entry-content').val('');
+    currentMood = '';
+    $('.mood').removeClass('selected-mood');
+    $('#entry-editor').show();
+  }
+  
+  // Función para editar una entrada existente
+  function editarEntrada(entryId) {
+    const entries = obtenerEntradas();
+    const entry = entries.find(e => e.id === entryId);
+    
+    if (entry) {
+      currentEntryId = entryId;
+      $('#editor-title').text('Editar entrada');
+      $('#entry-date').val(entry.date);
+      $('#entry-title').val(entry.title);
+      $('#entry-content').val(entry.content);
+      
+      // Seleccionar el estado de ánimo si existe
+      currentMood = entry.mood || '';
+      $('.mood').removeClass('selected-mood');
+      if (currentMood) {
+        $(`.mood[data-mood="${currentMood}"]`).addClass('selected-mood');
+      }
+      
+      $('#entry-editor').show();
+    }
+  }
+  
+  // Función para guardar una entrada
+  function guardarEntrada() {
+    const date = $('#entry-date').val();
+    const title = $('#entry-title').val() || 'Sin título';
+    const content = $('#entry-content').val();
+    
+    if (!content) {
+      mostrarMensaje('Por favor escribe algo en tu entrada', 'error');
+      return;
+    }
+    
+    const entries = obtenerEntradas();
+    
+    if (currentEntryId) {
+      // Actualizar entrada existente
+      const index = entries.findIndex(e => e.id === currentEntryId);
+      if (index !== -1) {
+        entries[index] = {
+          ...entries[index],
+          date: date,
+          title: title,
+          content: content,
+          mood: currentMood,
+          updatedAt: new Date().toISOString()
+        };
+      }
+    } else {
+      // Crear nueva entrada
+      const newEntry = {
+        id: 'entry_' + Date.now(),
+        date: date,
+        title: title,
+        content: content,
+        mood: currentMood,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      
+      entries.push(newEntry);
+    }
+    
+    // Guardar en localStorage
+    localStorage.setItem('diario_entradas', JSON.stringify(entries));
+    
+    // Actualizar vistas
+    cargarEntradasRecientes();
+    cargarListaEntradas();
+    cargarEstadisticas();
+    
+    // Ocultar editor
+    $('#entry-editor').hide();
+    
+    // Mostrar mensaje de éxito
+    mostrarMensaje('Entrada guardada con éxito', 'success');
+  }
+  
+  // Función para cancelar la edición
+  function cancelarEdicion() {
+    if (confirm('¿Cancelar los cambios?')) {
+      $('#entry-editor').hide();
+    }
+  }
+  
+  // Función para agregar una nueva nota
+  function agregarNota() {
+    const notas = obtenerNotas();
+    
+    const nuevaNota = {
+      id: 'note_' + Date.now(),
+      content: '',
+      createdAt: new Date().toISOString()
+    };
+    
+    notas.push(nuevaNota);
+    localStorage.setItem('diario_notas', JSON.stringify(notas));
+    
+    cargarNotas();
+    cargarEstadisticas();
+  }
+  
+  // Función para guardar una nota
+  function guardarNota(noteId, content) {
+    const notas = obtenerNotas();
+    const index = notas.findIndex(n => n.id === noteId);
+    
+    if (index !== -1) {
+      notas[index].content = content;
+      notas[index].updatedAt = new Date().toISOString();
+      
+      localStorage.setItem('diario_notas', JSON.stringify(notas));
+    }
+  }
+  
+  // Función para eliminar una nota
+  function eliminarNota(noteId) {
+    let notas = obtenerNotas();
+    notas = notas.filter(n => n.id !== noteId);
+    
+    localStorage.setItem('diario_notas', JSON.stringify(notas));
+    cargarEstadisticas();
+  }
+  
+  // Función para verificar la contraseña guardada o usar la por defecto
+  function obtenerContraseña() {
+    return localStorage.getItem('diario_password') || DEFAULT_PASSWORD;
+  }
+  
+  // Función para cambiar la contraseña
+  function cambiarContraseña() {
+    const currentPass = $('#current-password').val();
+    const newPass = $('#new-password').val();
+    const confirmPass = $('#confirm-password').val();
+    
+    // Verificar contraseña actual
+    if (currentPass !== obtenerContraseña()) {
+      mostrarMensaje('La contraseña actual es incorrecta', 'error');
+      return;
+    }
+    
+    // Verificar que las nuevas contraseñas coincidan
+    if (newPass !== confirmPass) {
+      mostrarMensaje('Las nuevas contraseñas no coinciden', 'error');
+      return;
+    }
+    
+    // Verificar que la nueva contraseña no esté vacía
+    if (!newPass) {
+      mostrarMensaje('La nueva contraseña no puede estar vacía', 'error');
+      return;
+    }
+    
+    // Guardar la nueva contraseña
+    localStorage.setItem('diario_password', newPass);
+    
+    // Limpiar campos y mostrar mensaje
+    $('#current-password').val('');
+    $('#new-password').val('');
+    $('#confirm-password').val('');
+    mostrarMensaje('Contraseña cambiada con éxito', 'success');
+  }
+  
+  // Función para exportar todos los datos
+  function exportarDatos() {
+    const datos = {
+      entries: obtenerEntradas(),
+      notes: obtenerNotas(),
+      drawings: JSON.parse(localStorage.getItem('diario_dibujos') || '[]'),
+      settings: {
+        darkMode: isDarkMode,
+        theme: currentTheme
+      },
+      version: '1.0'
+    };
+    
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(datos));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "mi_diario_backup_" + new Date().toISOString().slice(0,10) + ".json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    
+    mostrarMensaje('Datos exportados correctamente', 'success');
+  }
+  
+  // Función para importar datos
+  function importarDatos() {
+    const fileInput = document.getElementById('import-file');
+    fileInput.click();
+    
+    fileInput.onchange = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          
+          // Verificar formato
+          if (!data.entries || !data.notes) {
+            throw new Error('Formato no válido');
+          }
+          
+          // Confirmar antes de sobrescribir
+          Swal.fire({
+            title: '¿Importar datos?',
+            text: 'Esto reemplazará tus datos actuales. ¿Continuar?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, importar',
+            cancelButtonText: 'Cancelar'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // Guardar los datos
+              localStorage.setItem('diario_entradas', JSON.stringify(data.entries));
+              localStorage.setItem('diario_notas', JSON.stringify(data.notes));
+              
+              // Guardar dibujos si existen
+              if (data.drawings) {
+                localStorage.setItem('diario_dibujos', JSON.stringify(data.drawings));
+              }
+              
+              // Aplicar configuraciones si existen
+              if (data.settings) {
+                if (data.settings.darkMode !== undefined) {
+                  localStorage.setItem('diario_darkmode', data.settings.darkMode);
+                  isDarkMode = data.settings.darkMode;
+                  document.body.classList.toggle('dark-mode', isDarkMode);
+                }
+                
+                if (data.settings.theme) {
+                  currentTheme = data.settings.theme;
+                  // Aplicar tema
+                }
+              }
+              
+              // Actualizar vistas
+              cargarEntradasRecientes();
+              cargarListaEntradas();
+              cargarNotas();
+              mostrarDibujosGuardados();
+              cargarEstadisticas();
+              
+              mostrarMensaje('Datos importados correctamente', 'success');
+            }
+          });
+          
+        } catch (error) {
+          mostrarMensaje('Error al importar: archivo no válido', 'error');
+        }
+      };
+      reader.readAsText(file);
+    };
+  }
+  
+  // Función para eliminar todos los datos
+  function eliminarTodosDatos() {
+    Swal.fire({
+      title: '¿Eliminar todos los datos?',
+      text: 'Esta acción no se puede deshacer',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar todo',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#d33'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Preservar solo la contraseña
+        const password = obtenerContraseña();
+        const darkMode = isDarkMode;
+        
+        // Eliminar datos
+        localStorage.removeItem('diario_entradas');
+        localStorage.removeItem('diario_notas');
+        localStorage.removeItem('diario_dibujos');
+        
+        // Restaurar contraseña
+        localStorage.setItem('diario_password', password);
+        localStorage.setItem('diario_darkmode', darkMode);
+        
+        // Actualizar vistas
+        cargarEntradasRecientes();
+        cargarListaEntradas();
+        cargarNotas();
+        mostrarDibujosGuardados();
+        cargarEstadisticas();
+        
+        mostrarMensaje('Todos los datos han sido eliminados', 'success');
+      }
+    });
+  }
+  
+  // Función para mostrar mensajes con SweetAlert2
+  function mostrarMensaje(mensaje, tipo) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+    
+    Toast.fire({
+      icon: tipo,
+      title: mensaje
+    });
+  }
+  
+  // -------------------- EVENT LISTENERS --------------------
+  
+  // Evento para validar contraseña al iniciar
+  $('#loginBtn').click(function() {
+    const password = $('#passwordInput').val();
+    
+    if (password === obtenerContraseña()) {
+      $('#login').fadeOut();
+      inicializarApp();
+    } else {
+      $('#login-error').show();
+      $('#passwordInput').val('').focus();
+    }
+  });
+  
+  // Evento para tecla Enter en el login
+  $('#passwordInput').keypress(function(e) {
+    if (e.which === 13) {
+      $('#loginBtn').click();
+    }
+  });
+  
+  // Eventos de navegación del footer
+  $('footer i').click(function() {
+    const seccion = $(this).data('section');
+    mostrarSeccion(seccion);
+  });
+  
+  // Evento para cambiar modo oscuro/claro
+  $('#toggleMode, #theme-toggle').click(function() {
+    toggleDarkMode();
+  });
+  
+  // Eventos para opciones de tema
+  $('.theme-option').click(function() {
+    currentTheme = $(this).data('theme');
+    $('.theme-option').removeClass('active');
+    $(this).addClass('active');
+    // Aquí aplicaríamos el tema seleccionado
+  });
+  
+  // Evento para crear nueva entrada desde home
+  $('#new-entry-btn').click(function() {
+    nuevaEntrada();
+    mostrarSeccion('entries');
+  });
+  
+  // Eventos para el editor de entradas
+  $('#save-entry').click(guardarEntrada);
+  $('#cancel-entry').click(cancelarEdicion);
+  
+  // Evento para seleccionar estado de ánimo
+  $('.mood').click(function() {
+    $('.mood').removeClass('selected-mood');
+    $(this).addClass('selected-mood');
+    currentMood = $(this).data('mood');
+  });
+  
+  // Evento para agregar nueva nota
+  $('#add-note-btn').click(agregarNota);
+  
+  // Evento para cambiar contraseña
+  $('#change-password-btn').click(cambiarContraseña);
+  
+  // Eventos para gestión de datos
+  $('#export-data').click(exportarDatos);
+  $('#import-data').click(importarDatos);
+  $('#delete-all-data').click(eliminarTodosDatos);
+  
+  // Eventos para canvas
+  $('.color-btn').click(function() {
+    drawingColor = $(this).data('color');
+    isErasing = false;
+    $('#eraser-btn').removeClass('active');
+  });
+  
+  $('#brush-size').on('input', function() {
+    brushSize = $(this).val();
+  });
+  
+  $('#clear-canvas').click(limpiarCanvas);
+  $('#save-drawing').click(guardarDibujo);
+  $('#download-drawing').click(descargarDibujo);
+  
+  // Evento para buscar entradas
+  $('#search-btn').click(function() {
+    const searchTerm = $('#search-entries').val().toLowerCase();
+    const entries = obtenerEntradas();
+    const entriesList = $('#entries-list');
+    entriesList.empty();
+    
+    // Filtrar entradas
+    const filtradas = entries.filter(entry => 
+      entry.title.toLowerCase().includes(searchTerm) || 
+      entry.content.toLowerCase().includes(searchTerm)
+    );
+    
+    if (filtradas.length === 0) {
+      entriesList.html('<p>No se encontraron entradas que coincidan con tu búsqueda.</p>');
+      return;
+    }
+    
+    // Mostrar resultados
+    filtradas.forEach(entry => {
+      const preview = entry.content.length > 100 ? entry.content.substring(0, 100) + '...' : entry.content;
+      const entryItem = $(`
+        <div class="entry-item" data-id="${entry.id}">
+          <div class="entry-date">${formatearFecha(entry.date)} ${entry.mood || ''}</div>
+          <strong>${entry.title}</strong>
+          <div class="entry-preview">${preview}</div>
+        </div>
+      `);
+      
+      entryItem.on('click', function() {
+        editarEntrada(entry.id);
+      });
+      
+      entriesList.append(entryItem);
+    });
+  });
+  
+  // Iniciar verificación de contraseña al cargar
+  $(document).ready(function() {
+    $('#passwordInput').focus();
+  }); 
+   </script> 
+ </body>
+</html>
