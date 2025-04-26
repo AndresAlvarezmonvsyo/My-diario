@@ -2,7 +2,8 @@
 <html lang="es"> 
  <head> 
   <meta charset="UTF-8"> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  <title>Mi Diario Personal</title> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+  <title>Mi Diario Personal</title> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.css"> 
@@ -19,6 +20,7 @@
       --footer: #222;
       --footer-text: #fff;
       --header-bg: linear-gradient(to right, var(--primary), var(--secondary));
+      --gold: #FFD700;
     }
 
     .dark-mode {
@@ -33,6 +35,7 @@
       --footer: #111;
       --footer-text: #ddd;
       --header-bg: linear-gradient(to right, #2c2c54, #474787);
+      --gold: #FFD700;
     }
 
     * {
@@ -46,7 +49,7 @@
       padding: 0;
       background: var(--bg);
       color: var(--text);
-      padding-bottom: 60px;
+      
     }
 
     header {
@@ -74,10 +77,12 @@
     }
 
     .container {
-      max-width: 800px;
-      margin: 20px auto;
-      padding: 15px;
-    }
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+  min-height: calc(100vh - 120px); /* AÑADE esta línea */
+  overflow-y: auto; /* AÑADE esta línea */
+}
 
     .card {
       background: var(--card-bg);
@@ -88,7 +93,7 @@
       border: 1px solid var(--border);
     }
 
-    textarea, input[type="text"], input[type="password"], input[type="date"] {
+    textarea, input[type="text"], input[type="password"], input[type="date"], input[type="number"] {
       width: 100%;
       padding: 12px;
       border-radius: 8px;
@@ -136,6 +141,14 @@
       background: #f39c12;
     }
 
+    .btn-success {
+      background: #2ecc71;
+    }
+
+    .btn-info {
+      background: #3498db;
+    }
+
     #canvas-container {
       position: relative;
       margin-top: 10px;
@@ -165,20 +178,33 @@
       cursor: pointer;
     }
 
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: var(--footer);
-      color: var(--footer-text);
-      display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
-      box-shadow: 0 -2px 10px var(--shadow);
-      z-index: 999;
-    }
+   footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: var(--footer);
+  color: var(--footer-text);
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  box-shadow: 0 -2px 10px var(--shadow);
+  z-index: 999;
+}
 
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 15px;
+  padding-bottom: 80px; /* Espacio para el footer */
+  min-height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+body {
+  overflow-x: hidden;
+  padding-bottom: 0; /* Asegúrate que no hay padding aquí */
+}
     footer i {
       font-size: 22px;
       cursor: pointer;
@@ -473,18 +499,244 @@
       font-size: 0.8rem;
       color: var(--text);
       opacity: 0.7;
+      padding: 10px;
+      border: 2px solid var(--gold);
+      border-radius: 8px;
+      background: linear-gradient(to right, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05));
     }
+
+    /* Estilos para el teclado numérico */
+    .numeric-keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .num-key {
+      padding: 15px;
+      font-size: 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--secondary);
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .num-key:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .pin-display {
+      letter-spacing: 10px;
+      font-size: 1.5rem;
+      text-align: center;
+      margin: 15px 0;
+      min-height: 40px;
+    }
+
+    .pin-dot {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin: 0 5px;
+    }
+
+    .pin-input-container {
+      position: relative;
+    }
+
+    .pin-input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* Nuevos estilos para secciones adicionales */
+    .reminder-item {
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .reminder-text {
+      flex: 1;
+    }
+
+    .reminder-actions i {
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .habit-tracker {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+      margin-top: 15px;
+    }
+
+    .habit-day {
+      padding: 10px;
+      text-align: center;
+      border-radius: 8px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .habit-day.completed {
+      background: var(--secondary);
+      color: white;
+    }
+
+    /* Nuevo estilo para la galería de fotos */
+    .photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .photo-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      height: 150px;
+      border: 1px solid var(--border);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-actions {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: rgba(0,0,0,0.5);
+      padding: 5px;
+      border-radius: 8px 0 0 0;
+    }
+
+    .photo-actions i {
+      color: white;
+      margin-left: 5px;
+      cursor: pointer;
+    }
+
+    /* Estilos para el teclado compacto */
+    .numeric-keypad.compact {
+      gap: 5px;
+      padding: 5px;
+    }
+
+    .num-key.compact {
+      padding: 10px;
+      font-size: 1.2rem;
+    }
+
+    /* Estilos para los métodos de seguridad */
+    .security-method-selector {
+      margin-bottom: 15px;
+    }
+
+    .security-select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background-color: var(--bg);
+      color: var(--text);
+    }
+
+    .security-method {
+      margin-top: 15px;
+    }
+
+    /* Estilos para el patrón */
+    .pattern-container {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      grid-template-rows: repeat(3, 60px);
+      gap: 10px;
+    }
+
+    .pattern-dot {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--bg);
+      border: 2px solid var(--border);
+      cursor: pointer;
+    }
+
+    .pattern-dot.active {
+      background-color: var(--primary);
+    }
+
+    /* Estilos para huella digital */
+    .fingerprint-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .fingerprint-icon {
+      font-size: 60px;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .fingerprint-note {
+      font-size: 0.8rem;
+      color: var(--text);
+      opacity: 0.7;
+      margin-top: 10px;
+   } 
+ 
   </style> 
  </head> 
  <body> <!-- Pantalla de Login --> 
   <div id="login"> 
    <div class="login-card animate__animated animate__fadeIn"> 
-    <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-b964-61f6-93dc-581da68163ad/raw?se=2025-04-26T02%3A00%3A45Z&amp;sp=r&amp;sv=2024-08-04&amp;sr=b&amp;scid=eac16e5e-630a-5235-8861-76f242076f9c&amp;skoid=3f3a9132-9530-48ef-96b7-fee5a811733f&amp;sktid=a48cca56-e6da-484e-a814-9c849652bcb3&amp;skt=2025-04-25T23%3A05%3A52Z&amp;ske=2025-04-26T23%3A05%3A52Z&amp;sks=b&amp;skv=2024-08-04&amp;sig=mpsgBx1GkGwg89H1D/qafQL%2BiU2CXxD0ON89JDv2UAc%3D" alt="Diario Logo"> 
+    <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-f9f8-61f7-ada1-a419a5964643/raw?se=2025-04-27T00%3A16%3A31Z&sp=r&sv=2024-08-04&sr=b&scid=c163b22a-ce53-57d5-ab6f-b6cbfe4656d7&skoid=7c382de0-129f-486b-9922-6e4a89c6eb7d&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-04-26T17%3A37%3A13Z&ske=2025-04-27T17%3A37%3A13Z&sks=b&skv=2024-08-04&sig=TyWXjByO/RGsZTis5iv9DeEbfcMKT11faA9i9TAv/8g%3D" alt="Diario Logo"> 
     <h2>Mi Diario Personal</h2> 
-    <h2>Contraseña de fabrica "1234"<br>Si no te sientes seguro, la puedes cambiar</h2>
-    <p>Ingresa tu contraseña para continuar</p> 
-    <input type="password" id="passwordInput" placeholder="Contraseña" autofocus> 
-    <p id="login-error" style="color: #e74c3c; display: none;">Contraseña incorrecta</p> <button class="btn" id="loginBtn"><i class="fa fa-unlock"></i> Entrar</button> 
+    <p>Ingresa tu PIN de 4 dígitos</p> 
+    <div class="pin-display" id="pinDisplay"></div>
+    <input type="password" id="passwordInput" class="pin-input" maxlength="4" autofocus>
+    <div class="numeric-keypad compact">
+      <button class="num-key compact" data-num="1">1</button>
+      <button class="num-key compact" data-num="2">2</button>
+      <button class="num-key compact" data-num="3">3</button>
+      <button class="num-key compact" data-num="4">4</button>
+      <button class="num-key compact" data-num="5">5</button>
+      <button class="num-key compact" data-num="6">6</button>
+      <button class="num-key compact" data-num="7">7</button>
+      <button class="num-key compact" data-num="8">8</button>
+      <button class="num-key compact" data-num="9">9</button>
+      <button class="num-key compact" id="clear-pin"><i class="fa fa-arrow-left"></i></button>
+      <button class="num-key compact" data-num="0">0</button>
+      <button class="num-key compact" id="enter-pin"><i class="fa fa-unlock"></i></button>
+    </div>
+    <p id="login-error" style="color: #e74c3c; display: none;">PIN incorrecto</p>
+    <p style="margin-top: 15px; font-size: 0.9em;">PIN de fábrica: 1234 (cámbialo en Configuración)</p>
    </div> 
   </div> <!-- Header con título y botón de modo --> 
   <header> <button class="mode-toggle" id="toggleMode"> <i class="fa fa-moon"></i> </button> 
@@ -547,7 +799,9 @@
      <h3>Últimas entradas</h3> 
      <div id="recent-entries"> <!-- Entradas recientes se cargarán aquí --> 
      </div> 
-     <div style="text-align: center; margin-top: 20px;"> <button class="btn" id="new-entry-btn"> <i class="fa fa-plus"></i> Nueva entrada </button> 
+     <div style="text-align: center; margin-top: 20px;"> 
+      <button class="btn" id="new-entry-btn"> <i class="fa fa-plus"></i> Nueva entrada </button> 
+      <button class="btn btn-success" id="new-reminder-btn"> <i class="fa fa-bell"></i> Nuevo recordatorio </button>
      </div> 
     </div> 
    </section> <!-- Sección Entradas --> 
@@ -613,6 +867,44 @@
      <div id="saved-drawings"> <!-- Los dibujos guardados se mostrarán aquí --> 
      </div> 
     </div> 
+   </section> <!-- Nueva Sección Hábitos --> 
+   <section id="habits" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-check-circle"></i> Seguimiento de Hábitos</h2> 
+     <p>Registra y sigue tus hábitos diarios.</p> 
+     <div class="search-bar"> 
+      <input type="text" id="new-habit-input" placeholder="Nuevo hábito (ej. Beber agua)"> 
+      <button class="btn" id="add-habit-btn"><i class="fa fa-plus"></i> Añadir</button> 
+     </div> 
+     <div id="habits-list"> 
+      <!-- Lista de hábitos se cargará aquí --> 
+     </div> 
+    </div> 
+   </section> <!-- Nueva Sección Recordatorios --> 
+   <section id="reminders" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-bell"></i> Mis Recordatorios</h2> 
+     <p>Crea recordatorios para no olvidar cosas importantes.</p> 
+     <div class="search-bar"> 
+      <input type="text" id="new-reminder-input" placeholder="Nuevo recordatorio"> 
+      <input type="datetime-local" id="reminder-time"> 
+      <button class="btn" id="add-reminder-btn"><i class="fa fa-plus"></i> Añadir</button> 
+     </div> 
+     <div id="reminders-list"> 
+      <!-- Lista de recordatorios se cargará aquí --> 
+     </div> 
+    </div> 
+   </section> <!-- Nueva Sección Galería --> 
+   <section id="gallery" class="section"> 
+    <div class="card"> 
+     <h2><i class="fa fa-images"></i> Mi Galería</h2> 
+     <p>Guarda fotos y momentos especiales.</p> 
+     <input type="file" id="photo-upload" accept="image/*" style="display: none;"> 
+     <button class="btn" id="upload-photo-btn"><i class="fa fa-upload"></i> Subir foto</button> 
+     <div class="photo-gallery" id="photo-gallery"> 
+      <!-- Fotos se cargarán aquí --> 
+     </div> 
+    </div> 
    </section> <!-- Sección Configuración --> 
    <section id="settings" class="section"> 
     <div class="card"> 
@@ -629,10 +921,84 @@
      <h3>Modo</h3> <button class="btn" id="theme-toggle"><i class="fa fa-moon"></i> Cambiar a modo oscuro</button> 
      <h3>Seguridad</h3> 
      <div class="card"> 
-      <h4>Cambiar contraseña</h4> 
-      <input type="password" id="current-password" placeholder="Contraseña actual"> 
-      <input type="password" id="new-password" placeholder="Nueva contraseña"> 
-      <input type="password" id="confirm-password" placeholder="Confirmar nueva contraseña"> <button class="btn" id="change-password-btn"><i class="fa fa-key"></i> Cambiar contraseña</button> 
+      <h4>Configuración de Seguridad</h4>
+      
+      <!-- Selector de método de autenticación -->
+      <div class="security-method-selector">
+        <select id="security-method" class="security-select">
+          <option value="pin">PIN numérico</option>
+          <option value="pattern">Patrón</option>
+          <option value="password">Contraseña de texto</option>
+          <option value="fingerprint">Huella digital</option>
+        </select>
+      </div>
+      
+      <!-- Contenedores para cada método -->
+      <div id="pin-settings" class="security-method">
+        <div class="pin-display" id="changePinDisplay"></div>
+        <input type="password" id="current-pin" class="pin-input" maxlength="4" placeholder="PIN actual">
+        <input type="password" id="new-pin" class="pin-input" maxlength="4" placeholder="Nuevo PIN">
+        <input type="password" id="confirm-pin" class="pin-input" maxlength="4" placeholder="Confirmar nuevo PIN">
+        
+        <!-- Teclado numérico compacto -->
+        <div class="numeric-keypad compact">
+          <button class="num-key compact" data-num="1">1</button>
+          <button class="num-key compact" data-num="2">2</button>
+          <button class="num-key compact" data-num="3">3</button>
+          <button class="num-key compact" data-num="4">4</button>
+          <button class="num-key compact" data-num="5">5</button>
+          <button class="num-key compact" data-num="6">6</button>
+          <button class="num-key compact" data-num="7">7</button>
+          <button class="num-key compact" data-num="8">8</button>
+          <button class="num-key compact" data-num="9">9</button>
+          <button class="num-key compact" id="clear-change-pin"><i class="fa fa-arrow-left"></i></button>
+          <button class="num-key compact" data-num="0">0</button>
+          <button class="num-key compact" id="change-pin-btn"><i class="fa fa-key"></i> Cambiar</button>
+        </div>
+        <p id="pin-error" style="color: #e74c3c; display: none;"></p>
+      </div>
+      
+      <div id="pattern-settings" class="security-method" style="display:none;">
+        <p>Dibuja tu patrón de seguridad</p>
+        <div class="pattern-container">
+          <div class="pattern-grid">
+            <div class="pattern-dot" data-cell="1"></div>
+            <div class="pattern-dot" data-cell="2"></div>
+            <div class="pattern-dot" data-cell="3"></div>
+            <div class="pattern-dot" data-cell="4"></div>
+            <div class="pattern-dot" data-cell="5"></div>
+            <div class="pattern-dot" data-cell="6"></div>
+            <div class="pattern-dot" data-cell="7"></div>
+            <div class="pattern-dot" data-cell="8"></div>
+            <div class="pattern-dot" data-cell="9"></div>
+          </div>
+        </div>
+        <div class="pattern-actions">
+          <button class="btn btn-secondary" id="reset-pattern">Reiniciar</button>
+          <button class="btn" id="save-pattern">Guardar Patrón</button>
+        </div>
+      </div>
+      
+      <div id="password-settings" class="security-method" style="display:none;">
+        <input type="password" id="current-password" placeholder="Contraseña actual">
+        <input type="password" id="new-password" placeholder="Nueva contraseña">
+        <input type="password" id="confirm-password" placeholder="Confirmar nueva contraseña">
+        <button class="btn" id="change-password-btn"><i class="fa fa-key"></i> Cambiar Contraseña</button>
+        <p id="password-error" style="color: #e74c3c; display: none;"></p>
+      </div>
+      
+      <div id="fingerprint-settings" class="security-method" style="display:none;">
+        <p>Configuración de huella digital</p>
+        <div class="fingerprint-container">
+          <i class="fa fa-fingerprint fingerprint-icon"></i>
+          <p>Escanea tu huella digital para configurar</p>
+        </div>
+        <div class="fingerprint-actions">
+          <button class="btn" id="enable-fingerprint"><i class="fa fa-plus"></i> Habilitar Huella</button>
+          <button class="btn btn-danger" id="disable-fingerprint"><i class="fa fa-times"></i> Deshabilitar</button>
+        </div>
+        <p class="fingerprint-note">Nota: Puedes usar huella digital junto con PIN o patrón</p>
+      </div>
      </div> 
      <h3>Datos</h3> 
      <div class="card"> 
@@ -640,18 +1006,26 @@
       <input type="file" id="import-file" style="display: none;"> <button class="btn btn-danger" id="delete-all-data"><i class="fa fa-trash"></i> Borrar todos los datos</button> 
      </div> 
      <div class="credits">
-      Powered By Andres Alvarez
+      Powered By Andres Alvarez<br> Versión 2.1.0
      </div>
     </div> 
    </section> 
   </div> <!-- Footer de navegación --> 
-  <footer> <i class="fa fa-home active-nav" data-section="home"></i> <i class="fa fa-book-open" data-section="entries"></i> <i class="fa fa-sticky-note" data-section="notes"></i> <i class="fa fa-paint-brush" data-section="drawing"></i> <i class="fa fa-cog" data-section="settings"></i> 
+  <footer> 
+    <i class="fa fa-home active-nav" data-section="home"></i> 
+    <i class="fa fa-book-open" data-section="entries"></i> 
+    <i class="fa fa-sticky-note" data-section="notes"></i> 
+    <i class="fa fa-paint-brush" data-section="drawing"></i> 
+    <i class="fa fa-check-circle" data-section="habits"></i>
+    <i class="fa fa-bell" data-section="reminders"></i>
+    <i class="fa fa-images" data-section="gallery"></i>
+    <i class="fa fa-cog" data-section="settings"></i>
   </footer> <!-- Scripts --> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.12/sweetalert2.min.js"></script> 
   <script>
-  // Configuración de la contraseña por defecto
-  const DEFAULT_PASSWORD = "1234";
+  // Configuración del PIN por defecto
+  const DEFAULT_PIN = "1234";
   
   // Variables globales
   let currentTheme = "default";
@@ -663,6 +1037,9 @@
   let isDrawing = false;
   let isErasing = false;
   let canvas, ctx;
+  let enteredPin = "";
+  let patternCells = [];
+  let isDrawingPattern = false;
   
   // Función para inicializar la aplicación
   function inicializarApp() {
@@ -677,6 +1054,9 @@
     cargarEntradasRecientes();
     cargarListaEntradas();
     cargarNotas();
+    cargarHabitos();
+    cargarRecordatorios();
+    cargarFotos();
     
     // Establecer la sección activa por defecto
     mostrarSeccion('home');
@@ -689,6 +1069,21 @@
     
     // Ocultar el editor de entradas por defecto
     $('#entry-editor').hide();
+    
+    // Configurar fecha/hora por defecto para recordatorios
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 30);
+    document.getElementById('reminder-time').value = now.toISOString().slice(0, 16);
+    
+    // Configurar selector de métodos de seguridad
+    $('#security-method').change(function() {
+      const method = $(this).val();
+      $('.security-method').hide();
+      $(`#${method}-settings`).show();
+    });
+    
+    // Inicialmente mostrar solo PIN
+    $('#pin-settings').show();
   }
   
   // Función para mostrar la fecha actual
@@ -937,7 +1332,6 @@
       `);
       
       entryItem.on('click', function() {
-        // Editar esta entrada
         editarEntrada(entry.id);
       });
       
@@ -989,6 +1383,142 @@
     });
   }
   
+  // Función para cargar hábitos
+  function cargarHabitos() {
+    const habitos = obtenerHabitos();
+    const habitsList = $('#habits-list');
+    habitsList.empty();
+    
+    if (habitos.length === 0) {
+      habitsList.html('<p>No hay hábitos registrados. ¡Añade tu primer hábito!</p>');
+      return;
+    }
+    
+    habitos.forEach(habit => {
+      const habitElement = $(`
+        <div class="card" style="margin-top: 15px;">
+          <h3>${habit.name}</h3>
+          <div class="habit-tracker">
+            <div class="habit-day ${habit.days.includes(0) ? 'completed' : ''}" data-day="0">L</div>
+            <div class="habit-day ${habit.days.includes(1) ? 'completed' : ''}" data-day="1">M</div>
+            <div class="habit-day ${habit.days.includes(2) ? 'completed' : ''}" data-day="2">M</div>
+            <div class="habit-day ${habit.days.includes(3) ? 'completed' : ''}" data-day="3">J</div>
+            <div class="habit-day ${habit.days.includes(4) ? 'completed' : ''}" data-day="4">V</div>
+            <div class="habit-day ${habit.days.includes(5) ? 'completed' : ''}" data-day="5">S</div>
+            <div class="habit-day ${habit.days.includes(6) ? 'completed' : ''}" data-day="6">D</div>
+          </div>
+          <div style="text-align: right; margin-top: 10px;">
+            <button class="btn btn-danger delete-habit" data-id="${habit.id}">
+              <i class="fa fa-trash"></i> Eliminar
+            </button>
+          </div>
+        </div>
+      `);
+      
+      // Evento para marcar día como completado
+      habitElement.find('.habit-day').click(function() {
+        const day = parseInt($(this).data('day'));
+        toggleDiaHabit(habit.id, day);
+        $(this).toggleClass('completed');
+      });
+      
+      // Evento para eliminar hábito
+      habitElement.find('.delete-habit').click(function() {
+        if (confirm('¿Eliminar este hábito?')) {
+          eliminarHabito(habit.id);
+          habitElement.remove();
+        }
+      });
+      
+      habitsList.append(habitElement);
+    });
+  }
+  
+  // Función para cargar recordatorios
+  function cargarRecordatorios() {
+    const recordatorios = obtenerRecordatorios();
+    const remindersList = $('#reminders-list');
+    remindersList.empty();
+    
+    if (recordatorios.length === 0) {
+      remindersList.html('<p>No hay recordatorios. ¡Añade tu primer recordatorio!</p>');
+      return;
+    }
+    
+    // Ordenar recordatorios por fecha
+    recordatorios.sort((a, b) => new Date(a.time) - new Date(b.time));
+    
+    recordatorios.forEach(reminder => {
+      const reminderElement = $(`
+        <div class="reminder-item" data-id="${reminder.id}">
+          <div class="reminder-text">
+            <strong>${reminder.text}</strong>
+            <div>${new Date(reminder.time).toLocaleString()}</div>
+          </div>
+          <div class="reminder-actions">
+            <i class="fa fa-check complete-reminder" title="Completar"></i>
+            <i class="fa fa-trash delete-reminder" title="Eliminar"></i>
+          </div>
+        </div>
+      `);
+      
+      // Evento para marcar como completado
+      reminderElement.find('.complete-reminder').click(function() {
+        completarRecordatorio(reminder.id);
+        reminderElement.remove();
+      });
+      
+      // Evento para eliminar recordatorio
+      reminderElement.find('.delete-reminder').click(function() {
+        if (confirm('¿Eliminar este recordatorio?')) {
+          eliminarRecordatorio(reminder.id);
+          reminderElement.remove();
+        }
+      });
+      
+      remindersList.append(reminderElement);
+    });
+  }
+  
+  // Función para cargar fotos
+  function cargarFotos() {
+    const fotos = obtenerFotos();
+    const photoGallery = $('#photo-gallery');
+    photoGallery.empty();
+    
+    if (fotos.length === 0) {
+      photoGallery.html('<p>No hay fotos en la galería. ¡Sube tu primera foto!</p>');
+      return;
+    }
+    
+    fotos.forEach(photo => {
+      const photoElement = $(`
+        <div class="photo-item" data-id="${photo.id}">
+          <img src="${photo.dataURL}" alt="${photo.title || 'Foto'}">
+          <div class="photo-actions">
+            <i class="fa fa-download download-photo" title="Descargar"></i>
+            <i class="fa fa-trash delete-photo" title="Eliminar"></i>
+          </div>
+        </div>
+      `);
+      
+      // Evento para descargar foto
+      photoElement.find('.download-photo').click(function() {
+        descargarImagen(photo.dataURL, photo.title || 'foto');
+      });
+      
+      // Evento para eliminar foto
+      photoElement.find('.delete-photo').click(function() {
+        if (confirm('¿Eliminar esta foto?')) {
+          eliminarFoto(photo.id);
+          photoElement.remove();
+        }
+      });
+      
+      photoGallery.append(photoElement);
+    });
+  }
+  
   // Función para guardar un dibujo
   function guardarDibujo() {
     const dataURL = canvas.toDataURL('image/png');
@@ -1020,9 +1550,9 @@
             mostrarDibujosGuardados();
         }
     });
-}
+  }
 
-function mostrarDibujosGuardados() {
+  function mostrarDibujosGuardados() {
     const dibujos = JSON.parse(localStorage.getItem('diario_dibujos') || '[]');
     const container = $('#saved-drawings');
     container.empty();
@@ -1070,7 +1600,7 @@ function mostrarDibujosGuardados() {
         const title = $(this).data('title') || 'dibujo';
         descargarImagen(url, title);
     });
-}
+  }
   
   // Función para descargar una imagen
   function descargarImagen(url, nombre) {
@@ -1134,6 +1664,18 @@ function mostrarDibujosGuardados() {
     return JSON.parse(localStorage.getItem('diario_notas') || '[]');
   }
   
+  function obtenerHabitos() {
+    return JSON.parse(localStorage.getItem('diario_habitos') || '[]');
+  }
+  
+  function obtenerRecordatorios() {
+    return JSON.parse(localStorage.getItem('diario_recordatorios') || '[]');
+  }
+  
+  function obtenerFotos() {
+    return JSON.parse(localStorage.getItem('diario_fotos') || '[]');
+  }
+  
   // Función para mostrar una sección específica
   function mostrarSeccion(seccionId) {
     // Ocultar todas las secciones
@@ -1153,6 +1695,12 @@ function mostrarDibujosGuardados() {
       cargarNotas();
     } else if (seccionId === 'drawing') {
       mostrarDibujosGuardados();
+    } else if (seccionId === 'habits') {
+      cargarHabitos();
+    } else if (seccionId === 'reminders') {
+      cargarRecordatorios();
+    } else if (seccionId === 'gallery') {
+      cargarFotos();
     }
   }
   
@@ -1163,6 +1711,9 @@ function mostrarDibujosGuardados() {
       'entries': 'book-open',
       'notes': 'sticky-note',
       'drawing': 'paint-brush',
+      'habits': 'check-circle',
+      'reminders': 'bell',
+      'gallery': 'images',
       'settings': 'cog'
     };
     return iconMap[seccionId];
@@ -1191,7 +1742,7 @@ function mostrarDibujosGuardados() {
     // Aplicar cambios
     if (isDarkMode) {
       document.body.classList.add('dark-mode');
-      $('#toggleMode i').removeClass('fa-moon').addClass('fa-sun');
+      $('#toggleMode i').removeClass('fa-sun').addClass('fa-moon');
       $('#theme-toggle').html('<i class="fa fa-sun"></i> Cambiar a modo claro');
     } else {
       document.body.classList.remove('dark-mode');
@@ -1337,43 +1888,233 @@ function mostrarDibujosGuardados() {
     cargarEstadisticas();
   }
   
-  // Función para verificar la contraseña guardada o usar la por defecto
-  function obtenerContraseña() {
-    return localStorage.getItem('diario_password') || DEFAULT_PASSWORD;
+  // Función para agregar un nuevo hábito
+  function agregarHabito() {
+    const nombre = $('#new-habit-input').val().trim();
+    if (!nombre) {
+      mostrarMensaje('Por favor ingresa un nombre para el hábito', 'error');
+      return;
+    }
+    
+    const habitos = obtenerHabitos();
+    
+    const nuevoHabito = {
+      id: 'habit_' + Date.now(),
+      name: nombre,
+      days: [],
+      createdAt: new Date().toISOString()
+    };
+    
+    habitos.push(nuevoHabito);
+    localStorage.setItem('diario_habitos', JSON.stringify(habitos));
+    
+    $('#new-habit-input').val('');
+    cargarHabitos();
+    mostrarMensaje('Hábito añadido', 'success');
   }
   
-  // Función para cambiar la contraseña
-  function cambiarContraseña() {
-    const currentPass = $('#current-password').val();
-    const newPass = $('#new-password').val();
-    const confirmPass = $('#confirm-password').val();
+  // Función para alternar un día de hábito
+  function toggleDiaHabit(habitId, day) {
+    const habitos = obtenerHabitos();
+    const index = habitos.findIndex(h => h.id === habitId);
     
-    // Verificar contraseña actual
-    if (currentPass !== obtenerContraseña()) {
-      mostrarMensaje('La contraseña actual es incorrecta', 'error');
+    if (index !== -1) {
+      const dayIndex = habitos[index].days.indexOf(day);
+      if (dayIndex === -1) {
+        habitos[index].days.push(day);
+      } else {
+        habitos[index].days.splice(dayIndex, 1);
+      }
+      
+      localStorage.setItem('diario_habitos', JSON.stringify(habitos));
+    }
+  }
+  
+  // Función para eliminar un hábito
+  function eliminarHabito(habitId) {
+    let habitos = obtenerHabitos();
+    habitos = habitos.filter(h => h.id !== habitId);
+    
+    localStorage.setItem('diario_habitos', JSON.stringify(habitos));
+    mostrarMensaje('Hábito eliminado', 'success');
+  }
+  
+  // Función para agregar un nuevo recordatorio
+  function agregarRecordatorio() {
+    const texto = $('#new-reminder-input').val().trim();
+    const tiempo = $('#reminder-time').val();
+    
+    if (!texto) {
+      mostrarMensaje('Por favor ingresa un texto para el recordatorio', 'error');
       return;
     }
     
-    // Verificar que las nuevas contraseñas coincidan
-    if (newPass !== confirmPass) {
-      mostrarMensaje('Las nuevas contraseñas no coinciden', 'error');
+    const recordatorios = obtenerRecordatorios();
+    
+    const nuevoRecordatorio = {
+      id: 'reminder_' + Date.now(),
+      text: texto,
+      time: tiempo,
+      createdAt: new Date().toISOString()
+    };
+    
+    recordatorios.push(nuevoRecordatorio);
+    localStorage.setItem('diario_recordatorios', JSON.stringify(recordatorios));
+    
+    $('#new-reminder-input').val('');
+    // Configurar fecha/hora por defecto para el próximo recordatorio
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 30);
+    document.getElementById('reminder-time').value = now.toISOString().slice(0, 16);
+    
+    cargarRecordatorios();
+    mostrarMensaje('Recordatorio añadido', 'success');
+  }
+  
+  // Función para completar un recordatorio
+  function completarRecordatorio(reminderId) {
+    let recordatorios = obtenerRecordatorios();
+    recordatorios = recordatorios.filter(r => r.id !== reminderId);
+    
+    localStorage.setItem('diario_recordatorios', JSON.stringify(recordatorios));
+    mostrarMensaje('Recordatorio completado', 'success');
+  }
+  
+  // Función para eliminar un recordatorio
+  function eliminarRecordatorio(reminderId) {
+    let recordatorios = obtenerRecordatorios();
+    recordatorios = recordatorios.filter(r => r.id !== reminderId);
+    
+    localStorage.setItem('diario_recordatorios', JSON.stringify(recordatorios));
+    mostrarMensaje('Recordatorio eliminado', 'success');
+  }
+  
+  // Función para subir una foto
+  function subirFoto() {
+    const fileInput = document.getElementById('photo-upload');
+    fileInput.click();
+    
+    fileInput.onchange = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!file.type.match('image.*')) {
+        mostrarMensaje('Por favor selecciona un archivo de imagen', 'error');
+        return;
+      }
+      
+      Swal.fire({
+        title: 'Subir foto',
+        input: 'text',
+        inputLabel: 'Título de la foto (opcional)',
+        inputPlaceholder: 'Ingresa un título para tu foto',
+        showCancelButton: true,
+        confirmButtonText: 'Subir',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const title = result.value || '';
+          
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const fotos = obtenerFotos();
+            
+            fotos.push({
+              id: 'photo_' + Date.now(),
+              title: title,
+              dataURL: e.target.result,
+              createdAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('diario_fotos', JSON.stringify(fotos));
+            cargarFotos();
+            mostrarMensaje('Foto subida con éxito', 'success');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    };
+  }
+  
+  // Función para eliminar una foto
+  function eliminarFoto(photoId) {
+    let fotos = obtenerFotos();
+    fotos = fotos.filter(f => f.id !== photoId);
+    
+    localStorage.setItem('diario_fotos', JSON.stringify(fotos));
+    mostrarMensaje('Foto eliminada', 'success');
+  }
+  
+  // Función para verificar el PIN guardado o usar el por defecto
+  function obtenerPin() {
+    return localStorage.getItem('diario_pin') || DEFAULT_PIN;
+  }
+  
+  // Función para cambiar el PIN
+  function cambiarPin() {
+    const currentPin = $('#current-pin').val();
+    const newPin = $('#new-pin').val();
+    const confirmPin = $('#confirm-pin').val();
+    
+    // Verificar PIN actual
+    if (currentPin !== obtenerPin()) {
+      $('#pin-error').text('El PIN actual es incorrecto').show();
       return;
     }
     
-    // Verificar que la nueva contraseña no esté vacía
-    if (!newPass) {
-      mostrarMensaje('La nueva contraseña no puede estar vacía', 'error');
+    // Verificar que los nuevos PIN coincidan
+    if (newPin !== confirmPin) {
+      $('#pin-error').text('Los nuevos PIN no coinciden').show();
       return;
     }
     
-    // Guardar la nueva contraseña
-    localStorage.setItem('diario_password', newPass);
+    // Verificar que el nuevo PIN tenga 4 dígitos
+    if (newPin.length !== 4 || !/^\d+$/.test(newPin)) {
+      $('#pin-error').text('El PIN debe tener exactamente 4 dígitos').show();
+      return;
+    }
+    
+    // Guardar el nuevo PIN
+    localStorage.setItem('diario_pin', newPin);
     
     // Limpiar campos y mostrar mensaje
-    $('#current-password').val('');
-    $('#new-password').val('');
-    $('#confirm-password').val('');
-    mostrarMensaje('Contraseña cambiada con éxito', 'success');
+    $('#current-pin').val('');
+    $('#new-pin').val('');
+    $('#confirm-pin').val('');
+    $('#pin-error').hide();
+    mostrarMensaje('PIN cambiado con éxito', 'success');
+  }
+  
+  // Función para actualizar la visualización del PIN
+  function actualizarPinDisplay() {
+    const display = $('#pinDisplay');
+    display.empty();
+    
+    for (let i = 0; i < enteredPin.length; i++) {
+      display.append('<span class="pin-dot"></span>');
+    }
+  }
+  
+  // Función para actualizar la visualización del PIN en configuración
+  function actualizarChangePinDisplay() {
+    const display = $('#changePinDisplay');
+    display.empty();
+    
+    const currentPin = $('#current-pin').val();
+    const newPin = $('#new-pin').val();
+    const confirmPin = $('#confirm-pin').val();
+    
+    if (currentPin) {
+      display.append('<div>PIN actual: ' + '•'.repeat(currentPin.length) + '</div>');
+    }
+    
+    if (newPin) {
+      display.append('<div>Nuevo PIN: ' + '•'.repeat(newPin.length) + '</div>');
+    }
+    
+    if (confirmPin) {
+      display.append('<div>Confirmar PIN: ' + '•'.repeat(confirmPin.length) + '</div>');
+    }
   }
   
   // Función para exportar todos los datos
@@ -1382,6 +2123,9 @@ function mostrarDibujosGuardados() {
       entries: obtenerEntradas(),
       notes: obtenerNotas(),
       drawings: JSON.parse(localStorage.getItem('diario_dibujos') || '[]'),
+      habits: obtenerHabitos(),
+      reminders: obtenerRecordatorios(),
+      photos: obtenerFotos(),
       settings: {
         darkMode: isDarkMode,
         theme: currentTheme
@@ -1438,6 +2182,21 @@ function mostrarDibujosGuardados() {
                 localStorage.setItem('diario_dibujos', JSON.stringify(data.drawings));
               }
               
+              // Guardar hábitos si existen
+              if (data.habits) {
+                localStorage.setItem('diario_habitos', JSON.stringify(data.habits));
+              }
+              
+              // Guardar recordatorios si existen
+              if (data.reminders) {
+                localStorage.setItem('diario_recordatorios', JSON.stringify(data.reminders));
+              }
+              
+              // Guardar fotos si existen
+              if (data.photos) {
+                localStorage.setItem('diario_fotos', JSON.stringify(data.photos));
+              }
+              
               // Aplicar configuraciones si existen
               if (data.settings) {
                 if (data.settings.darkMode !== undefined) {
@@ -1457,6 +2216,9 @@ function mostrarDibujosGuardados() {
               cargarListaEntradas();
               cargarNotas();
               mostrarDibujosGuardados();
+              cargarHabitos();
+              cargarRecordatorios();
+              cargarFotos();
               cargarEstadisticas();
               
               mostrarMensaje('Datos importados correctamente', 'success');
@@ -1483,17 +2245,20 @@ function mostrarDibujosGuardados() {
       confirmButtonColor: '#d33'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Preservar solo la contraseña
-        const password = obtenerContraseña();
+        // Preservar solo el PIN
+        const pin = obtenerPin();
         const darkMode = isDarkMode;
         
         // Eliminar datos
         localStorage.removeItem('diario_entradas');
         localStorage.removeItem('diario_notas');
         localStorage.removeItem('diario_dibujos');
+        localStorage.removeItem('diario_habitos');
+        localStorage.removeItem('diario_recordatorios');
+        localStorage.removeItem('diario_fotos');
         
-        // Restaurar contraseña
-        localStorage.setItem('diario_password', password);
+        // Restaurar PIN
+        localStorage.setItem('diario_pin', pin);
         localStorage.setItem('diario_darkmode', darkMode);
         
         // Actualizar vistas
@@ -1501,6 +2266,9 @@ function mostrarDibujosGuardados() {
         cargarListaEntradas();
         cargarNotas();
         mostrarDibujosGuardados();
+        cargarHabitos();
+        cargarRecordatorios();
+        cargarFotos();
         cargarEstadisticas();
         
         mostrarMensaje('Todos los datos han sido eliminados', 'success');
@@ -1526,23 +2294,56 @@ function mostrarDibujosGuardados() {
   
   // -------------------- EVENT LISTENERS --------------------
   
-  // Evento para validar contraseña al iniciar
-  $('#loginBtn').click(function() {
-    const password = $('#passwordInput').val();
-    
-    if (password === obtenerContraseña()) {
+  // Eventos para el teclado numérico del login
+  $('.num-key[data-num]').click(function() {
+    if (enteredPin.length < 4) {
+      enteredPin += $(this).data('num');
+      actualizarPinDisplay();
+    }
+  });
+  
+  $('#clear-pin').click(function() {
+    enteredPin = '';
+    actualizarPinDisplay();
+  });
+  
+  $('#enter-pin').click(function() {
+    if (enteredPin === obtenerPin()) {
       $('#login').fadeOut();
       inicializarApp();
     } else {
       $('#login-error').show();
-      $('#passwordInput').val('').focus();
+      enteredPin = '';
+      actualizarPinDisplay();
     }
   });
+  
+  // Eventos para el teclado numérico en configuración
+  $('.num-key[data-num]').click(function() {
+    // Verificar si estamos en la sección de configuración
+    if ($('#settings').hasClass('active')) {
+      const activeInput = $('.pin-input:focus');
+      if (activeInput.length && activeInput.val().length < 4) {
+        activeInput.val(activeInput.val() + $(this).data('num'));
+        actualizarChangePinDisplay();
+      }
+    }
+  });
+  
+  $('#clear-change-pin').click(function() {
+    const activeInput = $('.pin-input:focus');
+    if (activeInput.length) {
+      activeInput.val('');
+      actualizarChangePinDisplay();
+    }
+  });
+  
+  $('#change-pin-btn').click(cambiarPin);
   
   // Evento para tecla Enter en el login
   $('#passwordInput').keypress(function(e) {
     if (e.which === 13) {
-      $('#loginBtn').click();
+      $('#enter-pin').click();
     }
   });
   
@@ -1571,6 +2372,12 @@ function mostrarDibujosGuardados() {
     mostrarSeccion('entries');
   });
   
+  // Evento para crear nuevo recordatorio desde home
+  $('#new-reminder-btn').click(function() {
+    mostrarSeccion('reminders');
+    $('#new-reminder-input').focus();
+  });
+  
   // Eventos para el editor de entradas
   $('#save-entry').click(guardarEntrada);
   $('#cancel-entry').click(cancelarEdicion);
@@ -1585,8 +2392,14 @@ function mostrarDibujosGuardados() {
   // Evento para agregar nueva nota
   $('#add-note-btn').click(agregarNota);
   
-  // Evento para cambiar contraseña
-  $('#change-password-btn').click(cambiarContraseña);
+  // Evento para agregar nuevo hábito
+  $('#add-habit-btn').click(agregarHabito);
+  
+  // Evento para agregar nuevo recordatorio
+  $('#add-reminder-btn').click(agregarRecordatorio);
+  
+  // Evento para subir foto
+  $('#upload-photo-btn').click(subirFoto);
   
   // Eventos para gestión de datos
   $('#export-data').click(exportarDatos);
@@ -1645,9 +2458,109 @@ function mostrarDibujosGuardados() {
     });
   });
   
+  // Eventos para el patrón de seguridad
+  $('.pattern-dot').on('mousedown touchstart', function() {
+    isDrawingPattern = true;
+    patternCells = [];
+    $('.pattern-dot').removeClass('active');
+    addPatternCell($(this).data('cell'));
+  });
+
+  $('.pattern-dot').on('mouseenter touchmove', function(e) {
+    if (isDrawingPattern) {
+      addPatternCell($(this).data('cell'));
+    }
+  });
+
+  $(document).on('mouseup touchend', function() {
+    isDrawingPattern = false;
+  });
+
+  function addPatternCell(cell) {
+    if (!patternCells.includes(cell)) {
+      patternCells.push(cell);
+      $(`.pattern-dot[data-cell="${cell}"]`).addClass('active');
+    }
+  }
+
+  $('#save-pattern').click(function() {
+    if (patternCells.length < 4) {
+      mostrarMensaje('El patrón debe tener al menos 4 puntos', 'error');
+      return;
+    }
+    
+    localStorage.setItem('diario_pattern', JSON.stringify(patternCells));
+    mostrarMensaje('Patrón guardado con éxito', 'success');
+    patternCells = [];
+  });
+
+  $('#reset-pattern').click(function() {
+    patternCells = [];
+    $('.pattern-dot').removeClass('active');
+  });
+  
+  // Evento para cambiar contraseña de texto
+  $('#change-password-btn').click(function() {
+    const currentPass = $('#current-password').val();
+    const newPass = $('#new-password').val();
+    const confirmPass = $('#confirm-password').val();
+    
+    // Validaciones
+    if (!currentPass || !newPass || !confirmPass) {
+      $('#password-error').text('Todos los campos son requeridos').show();
+      return;
+    }
+    
+    if (newPass !== confirmPass) {
+      $('#password-error').text('Las contraseñas no coinciden').show();
+      return;
+    }
+    
+    if (newPass.length < 6) {
+      $('#password-error').text('La contraseña debe tener al menos 6 caracteres').show();
+      return;
+    }
+    
+    // Guardar la nueva contraseña
+    localStorage.setItem('diario_password', newPass);
+    $('#password-error').hide();
+    mostrarMensaje('Contraseña cambiada con éxito', 'success');
+    
+    // Limpiar campos
+    $('#current-password').val('');
+    $('#new-password').val('');
+    $('#confirm-password').val('');
+  });
+  
+  // Simulación de huella digital
+  $('#enable-fingerprint').click(function() {
+    Swal.fire({
+      title: 'Configurar Huella Digital',
+      text: 'Por favor, escanea tu huella en el sensor',
+      icon: 'info',
+      showCancelButton: true,
+      confirmButtonText: 'Configurar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.setItem('diario_fingerprint', 'enabled');
+        mostrarMensaje('Huella digital configurada', 'success');
+      }
+    });
+  });
+
+  $('#disable-fingerprint').click(function() {
+    localStorage.removeItem('diario_fingerprint');
+    mostrarMensaje('Huella digital deshabilitada', 'success');
+  });
+  
   // Iniciar verificación de contraseña al cargar
   $(document).ready(function() {
     $('#passwordInput').focus();
+    // Configurar el PIN por defecto si no existe
+    if (!localStorage.getItem('diario_pin')) {
+      localStorage.setItem('diario_pin', DEFAULT_PIN);
+    }
   }); 
    </script> 
  </body>
